@@ -1,0 +1,8 @@
+---
+import RegisterForm from '../components/RegisterForm.jsx';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Registro UVK">
+  <RegisterForm client:load /> {/* Ya incluye el contenedor de pantalla completa */}
+</Layout>
