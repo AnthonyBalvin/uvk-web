@@ -1,24 +1,22 @@
 ---
 // src/layouts/AdminLayout.astro
+import '../styles/admin.css';
 const { pathname } = Astro.url;
 ---
-
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel de Administración | UVK</title>
-  <link rel="stylesheet" href="/src/styles/admin.css" />
   <meta name="robots" content="noindex, nofollow">
 </head>
 <body>
   <div class="dashboard-container">
-    {/* --- El HTML de tu sidebar y main-content se queda igual --- */}
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
         </div>
         <span class="sidebar-title">UVK CINES</span>
       </div>
@@ -57,7 +55,7 @@ const { pathname } = Astro.url;
       </nav>
       <div class="sidebar-footer">
         <button id="logout-button">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"></path></svg>
           <span>Cerrar Sesión</span>
         </button>
       </div>
@@ -73,51 +71,31 @@ const { pathname } = Astro.url;
   </script>
 
   <script is:inline>
-    // Función para cerrar la sesión
     async function handleLogout() {
-      const supabase = window.supabase;
-      if (!supabase) {
-        console.error('Supabase no está disponible.');
-        return;
-      }
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Error al cerrar sesión:', error);
-      } else {
-        window.location.href = '/login';
-      }
+      if (!window.supabase) return;
+      await window.supabase.auth.signOut();
+      window.location.href = '/login';
     }
 
-    // Función para proteger la ruta
     async function checkAdmin() {
-      // Esperamos a que el script de arriba cargue supabase en 'window'
-      await new Promise(resolve => setTimeout(resolve, 0));
-      
-      const supabase = window.supabase;
-      if (!supabase) {
+      await new Promise(resolve => setTimeout(resolve, 0)); // Pequeña espera para asegurar que window.supabase esté listo
+      if (!window.supabase) {
         console.error("Supabase client no se cargó.");
         return;
       }
-
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await window.supabase.auth.getSession();
       if (!session) {
         window.location.href = '/login';
         return;
       }
-      const { data: profile } = await supabase
-        .from('perfiles')
-        .select('rol')
-        .eq('id', session.user.id)
-        .single();
+      const { data: profile } = await window.supabase.from('perfiles').select('rol').eq('id', session.user.id).single();
       if (!profile || profile.rol !== 'administrador') {
         window.location.href = '/';
       }
     }
 
-    // Ejecutar la protección y añadir el evento al botón
     document.addEventListener('DOMContentLoaded', () => {
       checkAdmin();
-      
       const logoutBtn = document.getElementById('logout-button');
       if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
