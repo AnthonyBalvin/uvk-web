@@ -14,19 +14,64 @@ const LoginForm = () => {
     setLoading(true);
     setMessage('');
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      // Intentar hacer login
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      setMessage(`Error: ${error.message}`);
-    } else {
-      setMessage('¡Bienvenido de vuelta!');
+      if (authError) {
+        setMessage(`Error: ${authError.message}`);
+        setLoading(false);
+        return;
+      }
+
+      // Si el login es exitoso, obtener información del perfil del usuario
+      const { data: profileData, error: profileError } = await supabase
+        .from('perfiles') // Tu tabla se llama 'perfiles'
+        .select('rol') // Solo necesitamos el campo 'rol'
+        .eq('id', authData.user.id)
+        .single();
+
+      if (profileError) {
+        // Si no existe perfil, podrías crear uno o manejar el error
+        console.error('Error obteniendo perfil:', profileError);
+        setMessage('Error: No se pudo obtener la información del usuario');
+        setLoading(false);
+        return;
+      }
+
+      // Guardar información del usuario en localStorage para uso posterior
+      const userInfo = {
+        id: authData.user.id,
+        email: authData.user.email,
+        rol: profileData.rol
+      };
+      
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+      // Mostrar mensaje de bienvenida personalizado
+      const welcomeMessage = profileData.rol === 'administrador' 
+        ? `¡Bienvenido Administrador!`
+        : `¡Bienvenido de vuelta!`;
+      
+      setMessage(welcomeMessage);
+
+      // Redireccionar según el rol después de 1.5 segundos
       setTimeout(() => {
-        window.location.href = '/';
+        if (profileData.rol === 'administrador') {
+          window.location.href = '/admin';
+        } else {
+          window.location.href = '/';
+        }
       }, 1500);
+
+    } catch (error) {
+      console.error('Error inesperado:', error);
+      setMessage('Error: Ocurrió un problema inesperado');
     }
+    
     setLoading(false);
   };
 
@@ -182,10 +227,10 @@ const LoginForm = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Entrando...
+                  Verificando...
                 </>
               ) : (
-                'Continuar'
+                'Iniciar Sesión'
               )}
             </button>
 
@@ -224,41 +269,44 @@ const LoginForm = () => {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 0.5s ease-out;
-        }
-        
-        .animation-delay-2s {
-          animation-delay: 2s;
-        }
-        
-        .animation-delay-4s {
-          animation-delay: 4s;
-        }
-
-        /* Fondo móvil para pantallas pequeñas */
-        @media (max-width: 1023px) {
-          .w-full:first-child {
-            background-image: url('/images/fondologin.jpg');
-            background-size: cover;
-            background-position: center;
+      {/* Estilos CSS */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
           }
           
-          .w-full:first-child::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(185,28,28,0.3));
-            z-index: -1;
+          .animate-fade-in {
+            animation: fade-in 0.5s ease-out;
           }
-        }
-      `}</style>
+          
+          .animation-delay-2s {
+            animation-delay: 2s;
+          }
+          
+          .animation-delay-4s {
+            animation-delay: 4s;
+          }
+
+          /* Fondo móvil para pantallas pequeñas */
+          @media (max-width: 1023px) {
+            .w-full:first-child {
+              background-image: url('/images/fondologin.jpg');
+              background-size: cover;
+              background-position: center;
+            }
+            
+            .w-full:first-child::before {
+              content: '';
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(185,28,28,0.3));
+              z-index: -1;
+            }
+          }
+        `
+      }} />
     </div>
   );
 };

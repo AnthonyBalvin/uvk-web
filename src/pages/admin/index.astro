@@ -1,0 +1,46 @@
+---
+// src/pages/admin/index.astro
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+// En un futuro, aquí puedes obtener datos reales de Supabase
+const totalPeliculas = 78;
+const ventasHoy = 1250.50;
+const nuevosUsuarios = 12;
+---
+
+<AdminLayout>
+  <header class="main-header">
+    <h1>Dashboard</h1>
+    <p>Bienvenido de vuelta, Administrador. Aquí tienes un resumen de la actividad.</p>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3.75v3.75m-3.75-3.75v3.75m-3.75-3.75v3.75m9-15l-3.75-3.75L9 3m3 3l3.75-3.75L15 3m-3 12.75h3.75m-3.75 3.75h3.75M9 13.5h3.75m-3.75 3.75h3.75M12 3v12" /></svg>
+      </div>
+      <div class="stat-card-info">
+        <h3>Total Películas en Cartelera</h3>
+        <p>{totalPeliculas}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 11.21 12.77 11 12 11s-1.536.21-2.121.722z" /></svg>
+      </div>
+      <div class="stat-card-info">
+        <h3>Ventas del Día</h3>
+        <p>S/ {ventasHoy.toFixed(2)}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.964A3 3 0 0115 12a3 3 0 01-3 3m-3-3a3 3 0 100-6 3 3 0 000 6zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      </div>
+      <div class="stat-card-info">
+        <h3>Nuevos Usuarios Hoy</h3>
+        <p>{nuevosUsuarios}</p>
+      </div>
+    </div>
+  </div>
+</AdminLayout> 
