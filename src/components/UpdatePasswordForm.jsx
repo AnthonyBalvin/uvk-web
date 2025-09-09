@@ -9,12 +9,12 @@ const UpdatePasswordForm = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  // --- NUEVO ESTADO: Para saber si la sesión de recuperación está lista ---
+  // --- ESTADO CLAVE: Para saber si la sesión de recuperación está lista ---
   const [isSessionReady, setIsSessionReady] = useState(false);
 
-  // --- NUEVO useEffect: Nuestro "vigilante" que espera la señal de Supabase ---
+  // --- useEffect: El "vigilante" que espera la señal de Supabase ---
   useEffect(() => {
-    // Escuchamos el evento que se dispara cuando Supabase procesa el token.
+    // Escuchamos el evento que se dispara cuando Supabase procesa el token de la URL.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         // ¡Señal recibida! La sesión temporal está lista. Activamos el formulario.
