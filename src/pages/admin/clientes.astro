@@ -1,9 +1,14 @@
 ---
+// src/pages/admin/clientes.astro
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import ClientesTable from '../../components/ClientesTable.jsx';
 ---
 <AdminLayout>
-  <header class="main-header">
+  <header class="page-header">
     <h1>Gestión de Clientes</h1>
     <p>Visualiza y gestiona la información de los usuarios registrados.</p>
   </header>
+  <div class="content-card">
+    <ClientesTable client:load />
+  </div>
 </AdminLayout>

@@ -3,14 +3,203 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Promociones - UVK Cines">
-  <main class="min-h-screen p-8 text-white mt-20" style="background: linear-gradient(180deg, #f8f5f0 0%, #f2ede6 50%, #ede7dc 100%); color: #2c2c2c;">
-    <div class="container mx-auto text-center" style="background-color: transparent;">
-      <h1 class="text-5xl font-extrabold mb-4 tracking-wider" style="color: #e50914; text-shadow: 2px 2px 4px rgba(229, 9, 20, 0.1);">
-        Promociones
-      </h1>
-      <p class="text-2xl text-gray-700">
-        Pronto publicaremos las mejores ofertas para que disfrutes del cine.
-      </p>
+  <main class="min-h-screen p-8 mt-20" style="background: linear-gradient(180deg, #f8f5f0 0%, #f2ede6 50%, #ede7dc 100%); color: #2c2c2c;">
+    <div class="container mx-auto">
+      <!-- Header Section -->
+      <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold mb-4 tracking-wider" style="color: #e50914; text-shadow: 2px 2px 4px rgba(229, 9, 20, 0.1);">
+          Promociones
+        </h1>
+        <p class="text-xl text-gray-700 max-w-2xl mx-auto">
+          Aprovecha nuestras ofertas especiales y vive la mejor experiencia cinematográfica al mejor precio
+        </p>
+      </div>
+
+      <!-- Featured Promotion -->
+      <div class="mb-12">
+        <div class="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl shadow-2xl p-8 text-white text-center transform hover:scale-105 transition-all duration-300">
+          <div class="text-6xl mb-4">🎬</div>
+          <h2 class="text-4xl font-bold mb-4">¡PROMOCIÓN ESTRENO!</h2>
+          <p class="text-xl mb-6">2x1 en entradas los miércoles para todas las funciones</p>
+          <div class="bg-white text-red-600 font-bold px-8 py-3 rounded-full inline-block text-lg">
+            Válido hasta el 30 de septiembre
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Promotions Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <!-- Lunes -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-3xl mr-3">🎭</div>
+              <h3 class="text-2xl font-bold" style="color: #e50914;">Lunes Clásico</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Películas clásicas y documentales</p>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="font-bold" style="color: #e50914;">Entrada: S/ 12.00</p>
+              <p class="text-sm text-gray-600">Descuento del 25%</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Martes -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-3xl mr-3">🍿</div>
+              <h3 class="text-2xl font-bold" style="color: #e50914;">Martes de Combo</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Descuento especial en confitería</p>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="font-bold" style="color: #e50914;">20% OFF</p>
+              <p class="text-sm text-gray-600">En todos los combos</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Miércoles -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-3xl mr-3">💑</div>
+              <h3 class="text-2xl font-bold" style="color: #e50914;">Miércoles 2x1</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Perfecto para compartir</p>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="font-bold" style="color: #e50914;">2 x 1</p>
+              <p class="text-sm text-gray-600">En entradas generales</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jueves -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-3xl mr-3">🎓</div>
+              <h3 class="text-2xl font-bold" style="color: #e50914;">Jueves Estudiante</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Con carnet universitario vigente</p>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="font-bold" style="color: #e50914;">Entrada: S/ 10.00</p>
+              <p class="text-sm text-gray-600">Descuento del 35%</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Viernes -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-3xl mr-3">🌙</div>
+              <h3 class="text-2xl font-bold" style="color: #e50914;">Viernes Nocturno</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Funciones después de las 10 PM</p>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="font-bold" style="color: #e50914;">15% OFF</p>
+              <p class="text-sm text-gray-600">En entradas de trasnoche</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fin de Semana -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-3xl mr-3">👨‍👩‍👧‍👦</div>
+              <h3 class="text-2xl font-bold" style="color: #e50914;">Pack Familiar</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Sábados y domingos</p>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="font-bold" style="color: #e50914;">4 entradas + Combo</p>
+              <p class="text-sm text-gray-600">Por solo S/ 80.00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Special Programs -->
+      <div class="mb-12">
+        <h2 class="text-3xl font-bold text-center mb-8" style="color: #e50914;">Programas Especiales</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Membership Card -->
+          <div class="bg-white rounded-2xl shadow-lg p-6" style="border-left: 8px solid #e50914;">
+            <div class="flex items-center mb-4">
+              <div class="text-4xl mr-4">💳</div>
+              <h3 class="text-2xl font-bold" style="color: #e50914;">Tarjeta UVK Club</h3>
+            </div>
+            <ul class="space-y-2 text-gray-700 mb-6">
+              <li>• 10% de descuento permanente en entradas</li>
+              <li>• 15% OFF en confitería</li>
+              <li>• Entrada gratis en tu cumpleaños</li>
+              <li>• Acceso a previas exclusivas</li>
+            </ul>
+            <div class="text-center">
+              <button class="px-6 py-3 rounded-lg font-bold text-white transition-colors duration-300" style="background-color: #e50914;" onmouseover="this.style.backgroundColor='#c70812'" onmouseout="this.style.backgroundColor='#e50914'">
+                Solicitar Tarjeta
+              </button>
+            </div>
+          </div>
+
+          <!-- Corporate Discounts -->
+          <div class="bg-white rounded-2xl shadow-lg p-6" style="border-left: 8px solid #e50914;">
+            <div class="flex items-center mb-4">
+              <div class="text-4xl mr-4">🏢</div>
+              <h3 class="text-2xl font-bold" style="color: #e50914;">Descuentos Corporativos</h3>
+            </div>
+            <ul class="space-y-2 text-gray-700 mb-6">
+              <li>• Descuentos por volumen</li>
+              <li>• Eventos privados para empresas</li>
+              <li>• Funciones exclusivas</li>
+              <li>• Paquetes personalizados</li>
+            </ul>
+            <div class="text-center">
+              <button class="px-6 py-3 rounded-lg font-bold text-white transition-colors duration-300" style="background-color: #e50914;" onmouseover="this.style.backgroundColor='#c70812'" onmouseout="this.style.backgroundColor='#e50914'">
+                Contactar Ventas
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Promotions -->
+      <div class="bg-white rounded-2xl shadow-xl p-8" style="border: 2px solid #e50914;">
+        <h2 class="text-3xl font-bold text-center mb-8" style="color: #e50914;">Próximas Promociones</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="text-center p-6 rounded-lg" style="background-color: rgba(229, 9, 20, 0.1);">
+            <div class="text-3xl mb-3">🎃</div>
+            <h3 class="font-bold text-lg mb-2" style="color: #e50914;">Halloween Especial</h3>
+            <p class="text-gray-700">Maratón de terror con descuentos escalofriantes</p>
+            <p class="text-sm text-gray-500 mt-2">Octubre 2025</p>
+          </div>
+          
+          <div class="text-center p-6 rounded-lg" style="background-color: rgba(229, 9, 20, 0.1);">
+            <div class="text-3xl mb-3">🎄</div>
+            <h3 class="font-bold text-lg mb-2" style="color: #e50914;">Navidad Mágica</h3>
+            <p class="text-gray-700">Películas familiares con ofertas especiales</p>
+            <p class="text-sm text-gray-500 mt-2">Diciembre 2025</p>
+          </div>
+          
+          <div class="text-center p-6 rounded-lg" style="background-color: rgba(229, 9, 20, 0.1);">
+            <div class="text-3xl mb-3">🎊</div>
+            <h3 class="font-bold text-lg mb-2" style="color: #e50914;">Año Nuevo</h3>
+            <p class="text-gray-700">Celebra el nuevo año con funciones especiales</p>
+            <p class="text-sm text-gray-500 mt-2">Enero 2026</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="text-center mt-12 text-gray-600">
+        <p class="mb-2">
+          * Las promociones no son acumulables y están sujetas a disponibilidad.
+        </p>
+        <p>
+          * Consulta términos y condiciones específicos para cada promoción.
+        </p>
+      </div>
     </div>
   </main>
-</Layout>
+</Layout> 

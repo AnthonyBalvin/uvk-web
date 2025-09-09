@@ -3,14 +3,204 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Alimentos y Bebidas - UVK Cines">
-  <main class="min-h-screen p-8 text-white mt-20" style="background: linear-gradient(180deg, #f8f5f0 0%, #f2ede6 50%, #ede7dc 100%); color: #2c2c2c;">
-    <div class="container mx-auto text-center" style="background-color: transparent;">
-      <h1 class="text-5xl font-extrabold mb-4 tracking-wider" style="color: #e50914; text-shadow: 2px 2px 4px rgba(229, 9, 20, 0.1);">
-        Alimentos y Bebidas
-      </h1>
-      <p class="text-2xl text-gray-700">
-        Pronto, podrás ver nuestras deliciosas opciones de confitería.
-      </p>
+  <main class="min-h-screen p-8 mt-20" style="background: linear-gradient(180deg, #f8f5f0 0%, #f2ede6 50%, #ede7dc 100%); color: #2c2c2c;">
+    <div class="container mx-auto">
+      <!-- Header Section -->
+      <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold mb-4 tracking-wider" style="color: #e50914; text-shadow: 2px 2px 4px rgba(229, 9, 20, 0.1);">
+          Alimentos y Bebidas
+        </h1>
+        <p class="text-xl text-gray-700 max-w-2xl mx-auto">
+          Disfruta de nuestros deliciosos snacks y bebidas mientras vives la experiencia cinematográfica perfecta
+        </p>
+      </div>
+
+      <!-- Menu Categories -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <!-- Palomitas -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="text-4xl mb-4 text-center">🍿</div>
+            <h3 class="text-2xl font-bold mb-3" style="color: #e50914;">Palomitas</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Palomitas Pequeñas</span>
+                <span class="font-bold" style="color: #e50914;">S/ 8.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Palomitas Medianas</span>
+                <span class="font-bold" style="color: #e50914;">S/ 12.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Palomitas Grandes</span>
+                <span class="font-bold" style="color: #e50914;">S/ 16.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Palomitas Jumbo</span>
+                <span class="font-bold" style="color: #e50914;">S/ 20.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bebidas -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="text-4xl mb-4 text-center">🥤</div>
+            <h3 class="text-2xl font-bold mb-3" style="color: #e50914;">Bebidas</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Gaseosa Personal</span>
+                <span class="font-bold" style="color: #e50914;">S/ 6.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Gaseosa Mediana</span>
+                <span class="font-bold" style="color: #e50914;">S/ 9.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Gaseosa Grande</span>
+                <span class="font-bold" style="color: #e50914;">S/ 12.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Agua Mineral</span>
+                <span class="font-bold" style="color: #e50914;">S/ 4.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dulces -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="text-4xl mb-4 text-center">🍬</div>
+            <h3 class="text-2xl font-bold mb-3" style="color: #e50914;">Dulces</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">M&M's</span>
+                <span class="font-bold" style="color: #e50914;">S/ 8.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Skittles</span>
+                <span class="font-bold" style="color: #e50914;">S/ 8.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Kit Kat</span>
+                <span class="font-bold" style="color: #e50914;">S/ 6.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Nachos + Queso</span>
+                <span class="font-bold" style="color: #e50914;">S/ 15.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Combos -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="text-4xl mb-4 text-center">🎬</div>
+            <h3 class="text-2xl font-bold mb-3" style="color: #e50914;">Combos</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <div>
+                  <div class="font-medium">Combo Clásico</div>
+                  <div class="text-sm text-gray-600">Palomitas M + Gaseosa M</div>
+                </div>
+                <span class="font-bold" style="color: #e50914;">S/ 18.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <div>
+                  <div class="font-medium">Combo Familiar</div>
+                  <div class="text-sm text-gray-600">Palomitas G + 2 Gaseosas M</div>
+                </div>
+                <span class="font-bold" style="color: #e50914;">S/ 32.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="font-medium">Combo Dulce</div>
+                  <div class="text-sm text-gray-600">Dulce + Gaseosa P</div>
+                </div>
+                <span class="font-bold" style="color: #e50914;">S/ 12.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Helados -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="text-4xl mb-4 text-center">🍦</div>
+            <h3 class="text-2xl font-bold mb-3" style="color: #e50914;">Helados</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Häagen-Dazs</span>
+                <span class="font-bold" style="color: #e50914;">S/ 18.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span class="font-medium">Ben & Jerry's</span>
+                <span class="font-bold" style="color: #e50914;">S/ 20.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Helado Artesanal</span>
+                <span class="font-bold" style="color: #e50914;">S/ 12.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Especiales -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300" style="border-top: 4px solid #e50914;">
+          <div class="p-6">
+            <div class="text-4xl mb-4 text-center">⭐</div>
+            <h3 class="text-2xl font-bold mb-3" style="color: #e50914;">Especiales</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <div>
+                  <div class="font-medium">Hot Dogs</div>
+                  <div class="text-sm text-gray-600">Con salsas variadas</div>
+                </div>
+                <span class="font-bold" style="color: #e50914;">S/ 14.00</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                <div>
+                  <div class="font-medium">Café Premium</div>
+                  <div class="text-sm text-gray-600">Americano o Cappuccino</div>
+                </div>
+                <span class="font-bold" style="color: #e50914;">S/ 8.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="font-medium">Sándwich Club</div>
+                  <div class="text-sm text-gray-600">Triple con papas</div>
+                </div>
+                <span class="font-bold" style="color: #e50914;">S/ 22.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Special Banner -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 text-center" style="border: 2px solid #e50914;">
+        <h2 class="text-3xl font-bold mb-4" style="color: #e50914;">¡Ofertas Especiales!</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-4 rounded-lg" style="background-color: rgba(229, 9, 20, 0.1);">
+            <h3 class="font-bold text-lg mb-2" style="color: #e50914;">Martes de Combo</h3>
+            <p class="text-gray-700">20% de descuento en todos los combos</p>
+          </div>
+          <div class="p-4 rounded-lg" style="background-color: rgba(229, 9, 20, 0.1);">
+            <h3 class="font-bold text-lg mb-2" style="color: #e50914;">Recarga Gratis</h3>
+            <p class="text-gray-700">Recarga tu gaseosa grande sin costo adicional</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="text-center mt-12">
+        <p class="text-gray-600">
+          * Los precios pueden variar según la ubicación. Consulta con nuestro personal de confitería.
+        </p>
+      </div>
     </div>
   </main>
 </Layout>

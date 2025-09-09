@@ -210,7 +210,7 @@ const LoginForm = () => {
                   Recuérdame
                 </label>
               </div>
-              <a href="#" className="text-sm text-red-600 hover:text-red-500 font-semibold">
+              <a href="/forgot-password" className="text-sm text-red-600 hover:text-red-500 font-semibold">
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
@@ -266,6 +266,7 @@ const LoginForm = () => {
               </p>
             </div>
           </form>
+          
         </div>
       </div>
 
