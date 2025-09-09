@@ -1,0 +1,17 @@
+---
+// src/layouts/AuthLayout.astro
+import '../styles/global.css';
+const { title } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body style="background-color: #f1f5f9; margin: 0; padding: 0;">
+    <slot />
+  </body>
+</html>
