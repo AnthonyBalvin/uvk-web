@@ -1,11 +1,7 @@
 ---
 // src/layouts/Layout.astro
-import { supabase } from '../lib/supabaseClient.js';
 import Header from '../components/Header.astro';
 import '../styles/global.css';
-
-const { data: { session } } = await supabase.auth.getSession();
-const isLoggedIn = !!session;
 
 export interface Props {
   title: string;
@@ -14,7 +10,10 @@ export interface Props {
 const { title } = Astro.props;
 
 const currentPath = Astro.url.pathname.toLowerCase();
-const hideHeader = currentPath.startsWith('/login') || currentPath.startsWith('/registro') || currentPath.startsWith('/forgot-password') || currentPath.startsWith('/update-password');
+const hideHeader = currentPath.startsWith('/login') || 
+                  currentPath.startsWith('/registro') || 
+                  currentPath.startsWith('/forgot-password') || 
+                  currentPath.startsWith('/update-password');
 ---
 
 <html lang="es">
@@ -24,19 +23,14 @@ const hideHeader = currentPath.startsWith('/login') || currentPath.startsWith('/
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
 </head>
-<body style="background-color: #0f0f0f !important; color: #ffffff !important; margin: 0; padding: 0;">
-    { !hideHeader && <Header isLoggedIn={isLoggedIn} /> }
+<body>
+    { !hideHeader && <Header /> }
     <slot />
 </body>
 </html>
 
 <style>
-    body {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    /* Asegurar que no hay espacios en blanco */
+    /* Reset básico */
     * {
         margin: 0;
         padding: 0;
@@ -47,4 +41,38 @@ const hideHeader = currentPath.startsWith('/login') || currentPath.startsWith('/
         height: 100%;
         overflow-x: hidden;
     }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Estilos específicos para páginas con header */
+    body:not(.no-header) {
+        background: linear-gradient(135deg, #f8f5f0 0%, #f2ede6 100%);
+        min-height: 100vh;
+    }
+    
+    /* Para páginas de login/registro mantener el fondo oscuro */
+    .auth-page {
+        background-color: #0f0f0f !important;
+        color: #ffffff !important;
+    }
 </style>
+
+<script>
+  // Agregar clase para páginas de autenticación
+  document.addEventListener('DOMContentLoaded', function() {
+    const path = window.location.pathname.toLowerCase();
+    const isAuthPage = path.startsWith('/login') || 
+                      path.startsWith('/registro') || 
+                      path.startsWith('/forgot-password') || 
+                      path.startsWith('/update-password');
+    
+    if (isAuthPage) {
+      document.body.classList.add('auth-page');
+    }
+  });
+</script>

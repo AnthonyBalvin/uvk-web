@@ -1,34 +1,165 @@
 ---
 // src/components/Header.astro
 import UserMenu from './UserMenu.jsx';
+
+// Obtener la URL actual para resaltar el enlace activo
+const currentPath = Astro.url.pathname;
 ---
+
 <header class="fixed top-0 left-0 w-full z-50">
   <div class="py-6 px-6 border-b" style="background: linear-gradient(180deg, #f8f5f0 0%, #f2ede6 50%, #ede7dc 100%); border-color: #e5ddd0; box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);">
     <nav class="container mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-12">
-        <a href="/" class="flex items-center space-x-4 transition-colors duration-300" style="color: #2c2c2c;">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: #e50914;">
+        <a href="/" class="flex items-center space-x-4 transition-colors duration-300 hover:opacity-80" style="color: #2c2c2c;">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-lg" style="background-color: #e50914;">
             <span class="text-white font-bold text-lg">🎬</span>
           </div>
           <span class="text-3xl font-bold tracking-wide">UVK CINES</span>
         </a>
-        <ul class="flex items-center space-x-10 font-semibold text-lg">
+        
+        {/* Menú de navegación responsivo */}
+        <ul class="hidden lg:flex items-center space-x-10 font-semibold text-lg">
           <li class="relative">
-            <a href="/" class="pb-4 transition-all duration-300 border-b-2 border-transparent hover:border-red-500" style="color: #2c2c2c;">Cartelera</a>
+            <a 
+              href="/" 
+              class={`pb-4 transition-all duration-300 border-b-2 ${
+                currentPath === '/' 
+                  ? 'border-red-500 text-red-600' 
+                  : 'border-transparent hover:border-red-500'
+              }`}
+              style={currentPath !== '/' ? 'color: #2c2c2c;' : ''}
+            >
+              Cartelera
+            </a>
           </li>
-          <li>
-            <a href="/alimentos-bebidas" class="pb-4 transition-all duration-300 border-b-2 border-transparent hover:border-red-500" style="color: #2c2c2c;">Alimentos y Bebidas</a>
+          <li class="relative">
+            <a 
+              href="/alimentos-bebidas" 
+              class={`pb-4 transition-all duration-300 border-b-2 ${
+                currentPath === '/alimentos-bebidas' 
+                  ? 'border-red-500 text-red-600' 
+                  : 'border-transparent hover:border-red-500'
+              }`}
+              style={currentPath !== '/alimentos-bebidas' ? 'color: #2c2c2c;' : ''}
+            >
+              Alimentos y Bebidas
+            </a>
           </li>
-          <li>
-            <a href="/promociones" class="pb-4 transition-all duration-300 border-b-2 border-transparent hover:border-red-500" style="color: #2c2c2c;">Promociones</a>
+          <li class="relative">
+            <a 
+              href="/promociones" 
+              class={`pb-4 transition-all duration-300 border-b-2 ${
+                currentPath === '/promociones' 
+                  ? 'border-red-500 text-red-600' 
+                  : 'border-transparent hover:border-red-500'
+              }`}
+              style={currentPath !== '/promociones' ? 'color: #2c2c2c;' : ''}
+            >
+              Promociones
+            </a>
           </li>
         </ul>
+
+        {/* Menú hamburguesa para móvil */}
+        <button id="mobile-menu-button" class="lg:hidden p-2 rounded-lg hover:bg-white hover:bg-opacity-50 transition-colors">
+          <svg class="w-6 h-6" style="color: #2c2c2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
       </div>
       
-      {/* Aquí cargamos el componente dinámico */}
+      {/* Componente UserMenu */}
       <div class="flex items-center">
         <UserMenu client:load />
       </div>
     </nav>
+
+    {/* Menú móvil desplegable */}
+    <div id="mobile-menu" class="lg:hidden hidden border-t border-gray-200 mt-4 pt-4">
+      <div class="flex flex-col space-y-3">
+        <a 
+          href="/" 
+          class={`block py-2 px-4 rounded-lg font-semibold transition-all duration-300 ${
+            currentPath === '/' 
+              ? 'bg-red-50 text-red-600 border-l-4 border-red-500' 
+              : 'text-gray-700 hover:bg-white hover:bg-opacity-70'
+          }`}
+        >
+          Cartelera
+        </a>
+        <a 
+          href="/alimentos-bebidas" 
+          class={`block py-2 px-4 rounded-lg font-semibold transition-all duration-300 ${
+            currentPath === '/alimentos-bebidas' 
+              ? 'bg-red-50 text-red-600 border-l-4 border-red-500' 
+              : 'text-gray-700 hover:bg-white hover:bg-opacity-70'
+          }`}
+        >
+          Alimentos y Bebidas
+        </a>
+        <a 
+          href="/promociones" 
+          class={`block py-2 px-4 rounded-lg font-semibold transition-all duration-300 ${
+            currentPath === '/promociones' 
+              ? 'bg-red-50 text-red-600 border-l-4 border-red-500' 
+              : 'text-gray-700 hover:bg-white hover:bg-opacity-70'
+          }`}
+        >
+          Promociones
+        </a>
+      </div>
+    </div>
   </div>
 </header>
+
+<script>
+  // Script para el menú móvil
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        
+        // Cambiar icono del botón
+        const icon = mobileMenuButton.querySelector('svg path');
+        if (mobileMenu.classList.contains('hidden')) {
+          // Icono hamburguesa
+          icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        } else {
+          // Icono X
+          icon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Estilos adicionales para animaciones suaves */
+  #mobile-menu {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Mejora del hover en el logo */
+  header a:hover {
+    transform: translateY(-1px);
+  }
+  
+  /* Animación de entrada para el menú móvil */
+  #mobile-menu:not(.hidden) {
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

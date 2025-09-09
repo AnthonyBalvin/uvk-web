@@ -1,0 +1,12 @@
+
+---
+// src/pages/perfil.astro
+import Layout from '../layouts/Layout.astro';
+import PerfilDashboard from '../components/PerfilDashboard.jsx';
+---
+
+<Layout title="Mi Perfil - UVK CINES">
+  <main class="pt-28 min-h-screen">
+    <PerfilDashboard client:load />
+  </main>
+</Layout>
