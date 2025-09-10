@@ -24,9 +24,29 @@ const UpdatePasswordForm = () => {
           setIsValidSession(true);
         } else {
           // Si no hay sesión, verificar si estamos en un flujo de recuperación
+          // Primero intentar desde query parameters
           const urlParams = new URLSearchParams(window.location.search);
-          const accessToken = urlParams.get('access_token');
-          const refreshToken = urlParams.get('refresh_token');
+          let accessToken = urlParams.get('access_token');
+          let refreshToken = urlParams.get('refresh_token');
+          
+          // Si no están en query params, buscar en hash fragments
+          if (!accessToken || !refreshToken) {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            accessToken = hashParams.get('access_token');
+            refreshToken = hashParams.get('refresh_token');
+            
+            // También verificar formato alternativo
+            if (!accessToken) {
+              const hashString = window.location.hash.substring(1);
+              const tokenMatch = hashString.match(/access_token=([^&]+)/);
+              const refreshMatch = hashString.match(/refresh_token=([^&]+)/);
+              
+              if (tokenMatch) accessToken = tokenMatch[1];
+              if (refreshMatch) refreshToken = refreshMatch[1];
+            }
+          }
+          
+          console.log('Tokens encontrados:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
           
           if (accessToken && refreshToken) {
             // Establecer la sesión con los tokens de la URL
@@ -36,10 +56,29 @@ const UpdatePasswordForm = () => {
             });
             
             if (sessionError) {
+              console.error('Error al establecer sesión:', sessionError);
               setError('Sesión inválida o expirada. Por favor, solicita un nuevo enlace de recuperación.');
               setIsValidSession(false);
             } else {
               setIsValidSession(true);
+              // Limpiar la URL de los tokens por seguridad
+              window.history.replaceState({}, document.title, window.location.pathname);
+            }
+          } else if (accessToken && !refreshToken) {
+            // Algunos flujos solo tienen access_token
+            console.log('Solo access token encontrado, intentando establecer sesión...');
+            const { error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: '' // Intentar con refresh token vacío
+            });
+            
+            if (sessionError) {
+              console.error('Error con access token solo:', sessionError);
+              setError('Enlace de recuperación inválido o incompleto. Por favor, solicita un nuevo enlace.');
+              setIsValidSession(false);
+            } else {
+              setIsValidSession(true);
+              window.history.replaceState({}, document.title, window.location.pathname);
             }
           } else {
             setError('No se encontró una sesión válida. Por favor, solicita un nuevo enlace de recuperación de contraseña.');
