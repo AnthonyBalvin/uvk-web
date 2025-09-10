@@ -1,0 +1,98 @@
+---
+// src/pages/auth/callback.astro
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Procesando... | UVK Cines">
+  <main class="min-h-screen flex items-center justify-center bg-white px-4">
+    <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+      <h1 class="text-2xl font-bold text-gray-900">Procesando solicitud...</h1>
+      <p class="text-gray-600">Por favor espera mientras procesamos tu solicitud.</p>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { supabase } from '../../lib/supabaseClient';
+
+  // Función para procesar la autenticación
+  async function handleAuthCallback() {
+    try {
+      console.log('Procesando callback de auth...');
+      
+      // Obtener tokens de la URL
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      let accessToken = hashParams.get('access_token') || urlParams.get('access_token');
+      let refreshToken = hashParams.get('refresh_token') || urlParams.get('refresh_token');
+      let type = hashParams.get('type') || urlParams.get('type');
+      
+      console.log('Datos del callback:', { 
+        accessToken: !!accessToken, 
+        refreshToken: !!refreshToken, 
+        type: type 
+      });
+      
+      if (!accessToken) {
+        // Buscar en formato alternativo
+        const hashString = window.location.hash.substring(1);
+        const tokenMatch = hashString.match(/access_token=([^&]+)/);
+        const refreshMatch = hashString.match(/refresh_token=([^&]+)/);
+        
+        if (tokenMatch) accessToken = tokenMatch[1];
+        if (refreshMatch) refreshToken = refreshMatch[1];
+      }
+      
+      if (accessToken) {
+        // Determinar el tipo de callback
+        if (type === 'recovery' || window.location.hash.includes('type=recovery')) {
+          // Es un reset de contraseña
+          console.log('Callback de reset de contraseña detectado');
+          
+          // Cerrar cualquier sesión existente
+          await supabase.auth.signOut();
+          
+          // Redirigir al formulario con los tokens
+          const params = new URLSearchParams();
+          params.set('access_token', accessToken);
+          if (refreshToken) params.set('refresh_token', refreshToken);
+          params.set('type', 'recovery');
+          
+          window.location.href = `/update-password?${params.toString()}`;
+          return;
+        } else {
+          // Es un login normal - establecer sesión y redirigir
+          console.log('Callback de login normal');
+          
+          if (refreshToken) {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+            
+            if (error) {
+              console.error('Error al establecer sesión:', error);
+              window.location.href = '/login?error=session_error';
+              return;
+            }
+          }
+          
+          // Redirigir al dashboard o página principal
+          window.location.href = '/';
+          return;
+        }
+      } else {
+        console.error('No se encontraron tokens en el callback');
+        window.location.href = '/login?error=no_tokens';
+      }
+    } catch (error) {
+      console.error('Error en callback:', error);
+      window.location.href = '/login?error=callback_error';
+    }
+  }
+
+  // Ejecutar cuando la página cargue
+  document.addEventListener('DOMContentLoaded', handleAuthCallback);
+</script>

@@ -13,68 +13,47 @@ const UpdatePasswordForm = () => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        // Primero verificar si venimos de un enlace de reset de contraseña
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        // Verificar tokens desde query parameters (enviados por callback)
         const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('access_token');
+        const refreshToken = urlParams.get('refresh_token');
+        const type = urlParams.get('type');
         
-        let accessToken = hashParams.get('access_token') || urlParams.get('access_token');
-        let refreshToken = hashParams.get('refresh_token') || urlParams.get('refresh_token');
+        console.log('Verificando tokens:', { 
+          accessToken: !!accessToken, 
+          refreshToken: !!refreshToken, 
+          type: type 
+        });
         
-        // También verificar formato alternativo en hash
-        if (!accessToken) {
-          const hashString = window.location.hash.substring(1);
-          const tokenMatch = hashString.match(/access_token=([^&]+)/);
-          const refreshMatch = hashString.match(/refresh_token=([^&]+)/);
+        if (accessToken && type === 'recovery') {
+          // Tokens de recuperación válidos
+          console.log('Procesando tokens de recuperación...');
           
-          if (tokenMatch) accessToken = tokenMatch[1];
-          if (refreshMatch) refreshToken = refreshMatch[1];
-        }
-        
-        console.log('Tokens de reset encontrados:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
-        
-        if (accessToken) {
-          // Si venimos de un enlace de reset, forzar logout primero
-          console.log('Enlace de reset detectado, cerrando sesión actual...');
+          // Cerrar cualquier sesión existente
           await supabase.auth.signOut();
           
-          // Pequeña pausa para asegurar que el logout se complete
-          await new Promise(resolve => setTimeout(resolve, 100));
+          // Establecer sesión temporal para reset
+          const { error: sessionError } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || ''
+          });
           
-          // Ahora establecer la sesión temporal para cambio de contraseña
-          if (refreshToken) {
-            const { error: sessionError } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken
-            });
-            
-            if (sessionError) {
-              console.error('Error al establecer sesión de reset:', sessionError);
-              setError('Enlace de recuperación inválido o expirado. Por favor, solicita un nuevo enlace.');
-              setIsValidSession(false);
-            } else {
-              console.log('Sesión de reset establecida correctamente');
-              setIsValidSession(true);
-              // Limpiar la URL de los tokens por seguridad
-              window.history.replaceState({}, document.title, window.location.pathname);
-            }
-          } else if (accessToken) {
-            // Intentar solo con access token
-            const { error: sessionError } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: ''
-            });
-            
-            if (sessionError) {
-              console.error('Error con access token solo:', sessionError);
-              setError('Enlace de recuperación incompleto. Por favor, solicita un nuevo enlace.');
-              setIsValidSession(false);
-            } else {
-              setIsValidSession(true);
-              window.history.replaceState({}, document.title, window.location.pathname);
-            }
+          if (sessionError) {
+            console.error('Error al establecer sesión de reset:', sessionError);
+            setError('Enlace de recuperación inválido o expirado. Por favor, solicita un nuevo enlace.');
+            setIsValidSession(false);
+          } else {
+            console.log('Sesión de reset establecida correctamente');
+            setIsValidSession(true);
+            // Limpiar la URL por seguridad
+            window.history.replaceState({}, document.title, window.location.pathname);
           }
+        } else if (accessToken) {
+          // Tokens presentes pero no de tipo recovery
+          setError('Tipo de enlace no válido para cambio de contraseña.');
+          setIsValidSession(false);
         } else {
-          // No hay tokens de reset, verificar sesión normal
+          // No hay tokens, verificar si hay sesión activa
           const { data: { session }, error } = await supabase.auth.getSession();
           
           if (error) {
@@ -82,11 +61,11 @@ const UpdatePasswordForm = () => {
             setError('Error al verificar la sesión de autenticación.');
             setIsValidSession(false);
           } else if (session) {
-            // Si hay sesión normal pero no tokens de reset, redirigir
-            console.log('Sesión normal detectada, redirigiendo...');
-            setError('Ya tienes una sesión activa. Si quieres cambiar tu contraseña, solicita un enlace de recuperación desde el login.');
+            // Usuario ya autenticado - no debería estar aquí
+            setError('Ya tienes una sesión activa. Para cambiar tu contraseña, solicita un enlace de recuperación desde el login.');
             setIsValidSession(false);
           } else {
+            // No hay sesión ni tokens
             setError('No se encontró una sesión válida. Por favor, solicita un enlace de recuperación de contraseña.');
             setIsValidSession(false);
           }
