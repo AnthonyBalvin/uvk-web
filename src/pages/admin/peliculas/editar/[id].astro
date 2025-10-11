@@ -1,0 +1,68 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import EditMovieForm from '../../../../components/admin/EditMovieForm.jsx';
+
+const supabase = Astro.locals.supabase;
+const { data: { session } } = await supabase.auth.getSession();
+const { id: peliculaId } = Astro.params;
+
+if (!session?.user) {
+    return Astro.redirect('/login');
+}
+
+const { data: profile } = await supabase
+    .from('perfiles')
+    .select('rol')
+    .eq('id', session.user.id)
+    .single();
+
+if (profile?.rol !== 'administrador') {
+    return Astro.redirect('/');
+}
+
+const { data: pelicula, error } = await supabase
+    .from('peliculas')
+    .select('*')
+    .eq('id', peliculaId)
+    .single();
+
+if (error || !pelicula) {
+    return new Response("Película no encontrada", { status: 404 });
+}
+---
+
+<AdminLayout title={`Editando: ${pelicula.titulo}`}>
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-8">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header con botón de volver -->
+            <div class="mb-8">
+                <a 
+                    href="/admin/peliculas" 
+                    class="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors duration-200 group mb-6"
+                >
+                    <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="font-medium">Volver a Películas</span>
+                </a>
+                
+                <div class="flex items-center gap-4 mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-bold text-gray-900">Editar Película</h1>
+                        <p class="text-gray-600 mt-1">Modifica la información de <span class="font-semibold text-gray-900">"{pelicula.titulo}"</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario en tarjeta elegante -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
+                <EditMovieForm client:load pelicula={pelicula} />
+            </div>
+        </div>
+    </div>
+</AdminLayout>

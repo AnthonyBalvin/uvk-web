@@ -1,0 +1,44 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SeatSelector from '../../components/SeatSelector.jsx';
+import PurchaseFlowOrchestrator from '../../components/PurchaseFlowOrchestrator.jsx';
+
+const supabase = Astro.locals.supabase;
+const { data: { session } } = await supabase.auth.getSession();
+const usuario = session?.user || null;
+const { id: funcionId } = Astro.params;
+
+const { data: funcion, error } = await supabase
+  .from('funciones')
+  .select(`
+    id, fecha_hora, sala,
+    pelicula:peliculas(id, titulo, imagen_url),
+    cine:cines(id, nombre),
+    sala_info:salas(id, nombre, filas, asientos_por_fila)
+  `)
+  .eq('id', funcionId)
+  .single();
+
+const { data: boletosOcupados } = await supabase
+  .from('boletos')
+  .select('fila, asiento')
+  .eq('funcion_id', funcionId);
+
+if (error || !funcion) {
+  return new Response(`Función no encontrada.`, { status: 404 });
+}
+---
+
+<Layout title={`Comprar boletos para ${funcion.pelicula.titulo}`}>
+  <main class="min-h-screen pt-28" style="background: linear-gradient(135deg, #f8f5f0 0%, #f2ede6 100%);">
+    <div class="container mx-auto px-4 sm:px-8 py-8">
+      <PurchaseFlowOrchestrator 
+        client:load
+        funcion={funcion}
+        salaInfo={funcion.sala_info}
+        boletosOcupados={boletosOcupados || []}
+        usuario={usuario}
+      />
+    </div>
+  </main>
+</Layout>

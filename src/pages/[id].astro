@@ -1,22 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { supabase } from '../lib/supabaseClient.js';
 
-export async function getStaticPaths() {
-  const { data: peliculas, error } = await supabase
-    .from('peliculas')
-    .select('id');
-
-  if (error) {
-    console.error("Error en getStaticPaths:", error);
-    return [];
-  }
-
-  return peliculas.map((pelicula) => ({
-    params: { id: pelicula.id },
-  }));
-}
-
+const supabase = Astro.locals.supabase;
 const { id } = Astro.params;
 
 const { data: pelicula, error } = await supabase
@@ -26,57 +11,49 @@ const { data: pelicula, error } = await supabase
   .single();
 
 if (error || !pelicula) {
-  return new Response(null, {
-    status: 404,
-    statusText: 'No encontrado'
-  });
+  return new Response(null, { status: 404, statusText: 'No encontrado' });
 }
+
+const getYouTubeId = (url) => {
+  if (!url) return null;
+  const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = url.match(regex);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+};
+const embedUrl = getYouTubeId(pelicula.trailer_url);
 ---
 
 <Layout title={pelicula.titulo}>
-  <main class="min-h-screen p-8 mt-20" style="background: linear-gradient(180deg, #f8f5f0 0%, #f2ede6 50%, #ede7dc 100%); color: #2c2c2c;">
-    <div class="container mx-auto" style="background-color: transparent;">
+  <main class="min-h-screen pt-28" style="background: linear-gradient(180deg, #f8f5f0 0%, #f2ede6 50%, #ede7dc 100%); color: #2c2c2c;">
+    <div class="container mx-auto px-4 sm:px-8 py-8">
       <div class="flex flex-col md:flex-row gap-8">
-        <div class="flex-shrink-0">
+        <div class="flex-shrink-0 md:w-96">
           <img
             src={pelicula.imagen_url || '/images/placeholder.jpg'}
             alt={`Carátula de ${pelicula.titulo}`}
-            class="w-full md:w-96 rounded-lg shadow-xl"
+            class="w-full rounded-lg shadow-xl"
           />
-          <button class="mt-6 w-full bg-red-600 text-white py-3 rounded-lg text-lg font-bold hover:bg-red-700 transition-colors duration-200">
+          {/* BOTÓN ACTUALIZADO: AHORA ES UN LINK A LA NUEVA PÁGINA */}
+          <a href={`/horarios/${pelicula.id}`} class="mt-6 w-full bg-red-600 text-white py-3 rounded-lg text-lg font-bold hover:bg-red-700 transition-colors duration-200 flex items-center justify-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
             Comprar Entrada
-          </button>
+          </a>
         </div>
         
         <div class="flex-1">
-          <h1 class="text-5xl font-extrabold mb-4" style="color: #e50914; text-shadow: 2px 2px 4px rgba(229, 9, 20, 0.1);">{pelicula.titulo}</h1>
-          <p class="text-xl text-gray-700 mb-2">
-            Duración: {pelicula.duracion} min
-          </p>
-          <p class="text-xl text-gray-700 mb-6">
-            Género: {pelicula.genero}
-          </p>
-          <h2 class="text-3xl font-bold mb-4" style="color: #e50914; text-shadow: 1px 1px 2px rgba(229, 9, 20, 0.1);">Sinopsis</h2>
-          <p class="text-gray-700 leading-relaxed">
-            {pelicula.sinopsis}
-          </p>
+          <h1 class="text-5xl font-extrabold mb-4" style="color: #e50914;">{pelicula.titulo}</h1>
+          <p class="text-xl text-gray-700 mb-2">Duración: {pelicula.duracion} min</p>
+          <p class="text-xl text-gray-700 mb-6">Género: {pelicula.genero}</p>
+          <h2 class="text-3xl font-bold mb-4" style="color: #e50914;">Sinopsis</h2>
+          <p class="text-gray-700 leading-relaxed mb-8">{pelicula.sinopsis}</p>
 
-          {pelicula.trailer_url && (
-            <div class="mt-8">
-              <h2 class="text-3xl font-bold mb-4" style="color: #e50914; text-shadow: 1px 1px 2px rgba(229, 9, 20, 0.1);">Tráiler</h2>
-              <div class="aspect-w-16 aspect-h-9">
-                <iframe
-                  class="rounded-lg shadow-lg"
-                  width="100%"
-                  height="auto"
-                  src={pelicula.trailer_url.replace("watch?v=", "embed/")}
-                  title={`Tráiler de ${pelicula.titulo}`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
+          {embedUrl && (
+            <div class="mb-8">
+              <h2 class="text-3xl font-bold mb-4" style="color: #e50914;">Tráiler</h2>
+              <div class="aspect-w-16 aspect-h-9"><iframe class="rounded-lg shadow-lg" src={embedUrl} title={`Tráiler de ${pelicula.titulo}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div>
             </div>
           )}
+          {/* YA NO MOSTRAMOS EL FORMULARIO AQUÍ */}
         </div>
       </div>
     </div>
@@ -84,16 +61,6 @@ if (error || !pelicula) {
 </Layout>
 
 <style>
-  .aspect-w-16 {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-  }
-  .aspect-w-16 iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
+  .aspect-w-16 { position: relative; width: 100%; padding-bottom: 56.25%; }
+  .aspect-w-16 iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 </style>

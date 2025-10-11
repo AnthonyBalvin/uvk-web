@@ -1,9 +1,64 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import MoviesTable from '../../components/admin/MoviesTable.jsx';
+
+const supabase = Astro.locals.supabase;
+const { data: { session } } = await supabase.auth.getSession();
+
+if (!session?.user) {
+    return Astro.redirect('/login');
+}
+
+const { data: profile } = await supabase
+    .from('perfiles')
+    .select('rol')
+    .eq('id', session.user.id)
+    .single();
+
+if (profile?.rol !== 'administrador') {
+    return Astro.redirect('/');
+}
+
+const { data: peliculas } = await supabase
+    .from('peliculas')
+    .select('*')
+    .order('titulo', { ascending: true });
+
+const status = Astro.url.searchParams.get('status');
 ---
-<AdminLayout>
-  <header class="main-header">
-    <h1>Gestión de Películas</h1>
-    <p>Aquí podrás agregar, editar y eliminar películas.</p>
-  </header>
+
+<AdminLayout title="Gestionar Películas">
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-3">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-4xl font-bold text-gray-900">Películas</h1>
+                            <p class="text-gray-600 mt-1">Gestiona la cartelera de tu cine</p>
+                        </div>
+                    </div>
+                    
+                    <a 
+                        href="/admin/peliculas/nueva" 
+                        class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold py-3 px-6 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 sm:w-auto w-full"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        <span>Añadir Película</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tabla de Películas -->
+            <MoviesTable client:load initialMovies={peliculas || []} status={status} />
+        </div>
+    </div>
 </AdminLayout>

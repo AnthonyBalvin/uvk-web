@@ -1,0 +1,57 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import AddMovieForm from '../../../components/admin/AddMovieForm.jsx';
+
+const supabase = Astro.locals.supabase;
+const { data: { session } } = await supabase.auth.getSession();
+
+if (!session?.user) {
+    return Astro.redirect('/login');
+}
+
+const { data: profile } = await supabase
+    .from('perfiles')
+    .select('rol')
+    .eq('id', session.user.id)
+    .single();
+
+if (profile?.rol !== 'administrador') {
+    return Astro.redirect('/');
+}
+---
+
+<AdminLayout title="Añadir Nueva Película">
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-8">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header con botón de volver -->
+            <div class="mb-8">
+                <a 
+                    href="/admin/peliculas" 
+                    class="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors duration-200 group mb-6"
+                >
+                    <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="font-medium">Volver a Películas</span>
+                </a>
+                
+                <div class="flex items-center gap-4 mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-bold text-gray-900">Añadir Nueva Película</h1>
+                        <p class="text-gray-600 mt-1">Completa el formulario para registrar una nueva película en cartelera</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario en tarjeta elegante -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
+                <AddMovieForm client:load />
+            </div>
+        </div>
+    </div>
+</AdminLayout>

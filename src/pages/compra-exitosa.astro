@@ -1,0 +1,29 @@
+---
+// src/pages/compra-exitosa.astro
+import Layout from '../layouts/Layout.astro';
+
+// Para más seguridad, comprobamos que el usuario venga de una compra
+// y no pueda acceder a esta página directamente.
+const referer = Astro.request.headers.get('referer');
+if (!referer || !referer.includes('/seleccionar-asientos/')) {
+    return Astro.redirect("/");
+}
+---
+
+<Layout title="¡Compra Exitosa!">
+  <main class="min-h-screen flex items-center justify-center text-center px-4 pt-24" style="background: linear-gradient(135deg, #f8f5f0 0%, #f2ede6 100%);">
+    <div>
+      <svg class="w-24 h-24 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <h1 class="text-5xl font-bold mt-6 text-gray-800">¡Gracias por tu compra!</h1>
+      <p class="text-xl text-gray-700 mt-4">Hemos guardado tus boletos. Puedes verlos en tu perfil.</p>
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/perfil" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-red-700 transition-colors">
+          Ver mis Compras
+        </a>
+        <a href="/" class="bg-gray-200 text-gray-800 font-bold py-3 px-8 rounded-lg text-lg hover:bg-gray-300 transition-colors">
+          Volver al Inicio
+        </a>
+      </div>
+    </div>
+  </main>
+</Layout>
