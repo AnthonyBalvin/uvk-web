@@ -15,34 +15,35 @@ const LoginForm = () => {
     setMessage('');
 
     try {
-      // Intentar hacer login
+      // ENDPOINT 1: Login
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+     // Validación 1: Error de autenticación
       if (authError) {
         setMessage(`Error: ${authError.message}`);
         setLoading(false);
         return;
       }
 
-      // Si el login es exitoso, obtener información del perfil del usuario
+      // ENDPOINT 2: Obtener perfil del usuario
       const { data: profileData, error: profileError } = await supabase
-        .from('perfiles') // Tu tabla se llama 'perfiles'
-        .select('rol') // Solo necesitamos el campo 'rol'
+        .from('perfiles') 
+        .select('rol')
         .eq('id', authData.user.id)
         .single();
 
       if (profileError) {
-        // Si no existe perfil, podrías crear uno o manejar el error
+        // Validación 2: Error al obtener perfil
         console.error('Error obteniendo perfil:', profileError);
         setMessage('Error: No se pudo obtener la información del usuario');
         setLoading(false);
         return;
       }
 
-      // Guardar información del usuario en localStorage para uso posterior
+      // Validación 3: Guardar información del usuario
       const userInfo = {
         id: authData.user.id,
         email: authData.user.email,

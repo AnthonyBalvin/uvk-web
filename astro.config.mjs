@@ -14,5 +14,11 @@ export default defineConfig({
   
   vite: {
     plugins: [tailwindcss()],
+
+    // 👇 AÑADE ESTO DENTRO DE 'vite' 👇
+    server: {
+      // Permite que cualquier subdominio de ngrok-free.dev acceda a tu servidor.
+      allowedHosts: ['.ngrok-free.dev', '.ngrok.io']
+    }
   },
 });

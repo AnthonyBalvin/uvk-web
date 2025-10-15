@@ -25,7 +25,7 @@ export default function AddMovieForm() {
     setIsLoading(true);
     setError('');
     setSuccess('');
-
+    // VALIDACIÓN 1: Verificar que todos los campos estén completos
     for (const key in formData) {
       if (!formData[key]) {
         setError(`Por favor completa el campo: ${key.replace('_', ' ')}`);
@@ -35,6 +35,7 @@ export default function AddMovieForm() {
     }
 
     try {
+    // ENDPOINT POST: Insertar nueva película
       const { error: insertError } = await supabase
         .from('peliculas')
         .insert([

@@ -212,6 +212,7 @@ export default function AlimentosManager() {
     fetchAlimentos();
   }, []);
 
+  //ENDPOINT 1: LISTAR/OBTENER Alimentos (GET/SELECT)
   const fetchAlimentos = async () => {
     setLoading(true);
     const { data, error } = await supabase.from('alimentos').select('*').order('nombre', { ascending: true });
@@ -231,6 +232,7 @@ export default function AlimentosManager() {
     setToast({ message: '', type: '', show: false });
   };
 
+   //ENDPOINT 2: CREAR Alimento (POST/INSERT)
   const handleSave = async (formData) => {
     setIsSubmitting(true);
     if (editingAlimento) {
@@ -249,6 +251,7 @@ export default function AlimentosManager() {
     fetchAlimentos();
   };
 
+  //ENDPOINT 3: ACTUALIZAR Alimento (PUT/UPDATE)
   const handleDelete = async () => {
     if (!deletingAlimento) return;
     setIsSubmitting(true);

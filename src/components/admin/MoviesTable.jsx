@@ -92,6 +92,7 @@ export default function MoviesTable({ initialMovies, status }) {
     }
   }, [status]);
 
+  //ENDPOINT 1: ELIMINAR Película (DELETE)
   const handleDelete = async (movieId) => {
     setIsDeleting(true);
     try {

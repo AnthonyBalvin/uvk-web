@@ -20,6 +20,7 @@ if (profile?.rol !== 'administrador') {
     return Astro.redirect('/');
 }
 
+//Endpoint GET - Obtener película por ID
 const { data: pelicula, error } = await supabase
     .from('peliculas')
     .select('*')

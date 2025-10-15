@@ -1,0 +1,38 @@
+---
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pago Rechazado - UVK Cines</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+      <div class="mb-6">
+        <div class="mx-auto w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
+          <svg class="w-12 h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </div>
+      </div>
+      
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        Pago Rechazado
+      </h1>
+      
+      <p class="text-gray-600 mb-6">
+        El pago no pudo ser procesado. Por favor, intenta nuevamente.
+      </p>
+
+      <button
+        onclick="window.location.href='/'"
+        class="w-full bg-red-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-red-700 transition-colors"
+      >
+        Intentar Nuevamente
+      </button>
+    </div>
+  </div>
+</body>
+</html>

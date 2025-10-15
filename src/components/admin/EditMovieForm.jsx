@@ -24,6 +24,7 @@ export default function EditMovieForm({ pelicula }) {
     setError('');
 
     try {
+      //ENDPOINT PUT: Actualizar película existente
       const { error: updateError } = await supabase
         .from('peliculas')
         .update({ ...formData, duracion: parseInt(formData.duracion) })

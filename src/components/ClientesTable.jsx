@@ -32,7 +32,6 @@ const Toast = ({ message, type, onHide }) => {
   );
 };
 
-// Modal mejorado con Tailwind
 const Modal = ({ children, onClose, isSubmitting }) => (
   <div 
     className="fixed inset-0 z-50 flex items-center justify-center p-4" 
@@ -75,6 +74,7 @@ const ClientesTable = () => {
     }, 3200);
   };
 
+  // ENDPOINT 1: GET
   const fetchClientes = async () => {
     try {
       setLoading(true);
@@ -102,6 +102,7 @@ const ClientesTable = () => {
     setDeleteModalOpen(true);
   };
 
+  // ENDPOINT 2: PUT
   const handleUpdateClient = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -124,6 +125,8 @@ const ClientesTable = () => {
       setIsSubmitting(false);
     }
   };
+
+  // ENDPOINT 3: DELETE
 
   const handleDeleteClient = async () => {
     setIsSubmitting(true);

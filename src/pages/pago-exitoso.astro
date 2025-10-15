@@ -1,0 +1,120 @@
+---
+// Obtener parámetros de la URL
+const url = new URL(Astro.request.url);
+const paymentId = url.searchParams.get('payment_id');
+const status = url.searchParams.get('status');
+const preferenceId = url.searchParams.get('preference_id');
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pago Exitoso - UVK Cines</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+      <!-- Icono de éxito -->
+      <div class="mb-6">
+        <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+          <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Título -->
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        ¡Compra realizada con éxito!
+      </h1>
+      
+      <!-- Mensaje -->
+      <p class="text-gray-600 mb-6">
+        Revisa tu email para los detalles de tu compra.
+      </p>
+
+      <!-- Información del pago -->
+      {paymentId && (
+        <div class="bg-blue-50 rounded-lg p-4 mb-6">
+          <p class="text-sm text-gray-600 mb-1">ID de Pago</p>
+          <p class="text-lg font-mono text-gray-900">{paymentId}</p>
+        </div>
+      )}
+
+      <!-- Estado del pago -->
+      <div class="mb-6">
+        <div id="payment-status" class="animate-pulse">
+          <p class="text-gray-500">Verificando estado del pago...</p>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="space-y-3">
+        <button
+          onclick="window.location.href='/'"
+          class="w-full bg-red-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-red-700 transition-colors"
+        >
+          Volver al Inicio
+        </button>
+        
+        <button
+          onclick="window.print()"
+          class="w-full bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-200 transition-colors"
+        >
+          Imprimir Comprobante
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script define:vars={{ paymentId, preferenceId }}>
+    // Verificar el estado del pago
+    async function verificarPago() {
+      if (!preferenceId) return;
+
+      try {
+        const response = await fetch(`/api/verificar-pago?preference_id=${preferenceId}`);
+        const data = await response.json();
+
+        const statusDiv = document.getElementById('payment-status');
+        
+        if (data.status === 'approved') {
+          statusDiv.innerHTML = `
+            <div class="flex items-center justify-center space-x-2 text-green-600">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-semibold">Pago confirmado</span>
+            </div>
+          `;
+        } else if (data.status === 'pending') {
+          statusDiv.innerHTML = `
+            <div class="flex items-center justify-center space-x-2 text-yellow-600">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-semibold">Pago pendiente</span>
+            </div>
+          `;
+        } else {
+          statusDiv.innerHTML = `
+            <div class="text-gray-600">
+              <span>Estado: ${data.status || 'Procesando'}</span>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error verificando pago:', error);
+      }
+    }
+
+    // Verificar al cargar la página
+    if (preferenceId) {
+      verificarPago();
+    }
+  </script>
+</body>
+</html>
