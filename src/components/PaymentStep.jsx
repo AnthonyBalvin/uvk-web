@@ -48,61 +48,57 @@ export default function PaymentStep({
     }
   ];
 
-  // ========== ESCUCHAR CAMBIOS EN TIEMPO REAL ==========
-  useEffect(() => {
-    if (!showQRModal || !paymentData?.compraId) {
-      return;
+useEffect(() => {
+  if (!showQRModal || !paymentData?.compraId) {
+    return;
+  }
+
+  console.log(`🔄 Iniciando polling para compra ID: ${paymentData.compraId}`);
+
+  // Verificar cada 3 segundos
+  const interval = setInterval(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('compras')
+        .select('mp_payment_status')
+        .eq('id', paymentData.compraId)
+        .single();
+
+      if (error) {
+        console.error('❌ Error al verificar estado:', error);
+        return;
+      }
+
+      const newStatus = data.mp_payment_status;
+      console.log('📊 Estado actual:', newStatus);
+      
+      setPaymentStatus(newStatus);
+
+      if (newStatus === 'approved') {
+        console.log('💚 ¡Pago aprobado! Cerrando modal...');
+        clearInterval(interval);
+        
+        setTimeout(() => {
+          setShowQRModal(false);
+          onConfirmPurchase({
+            paymentMethod: selectedPaymentMethod,
+            customerData,
+            compraId: paymentData.compraId,
+            paymentStatus: 'approved'
+          });
+        }, 1500);
+      }
+    } catch (err) {
+      console.error('❌ Error en polling:', err);
     }
+  }, 3000); // Cada 3 segundos
 
-    console.log(`🎧 Suscribiéndose a cambios para compra ID: ${paymentData.compraId}`);
-
-    // Crear canal de Supabase Realtime
-    const channel = supabase
-      .channel(`payment-changes-${paymentData.compraId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'compras',
-          filter: `id=eq.${paymentData.compraId}`
-        },
-        (payload) => {
-          console.log('✅ ¡Cambio detectado!', payload);
-          
-          const newStatus = payload.new.mp_payment_status;
-          console.log('📊 Nuevo estado:', newStatus);
-          
-          setPaymentStatus(newStatus);
-
-          if (newStatus === 'approved') {
-            console.log('💚 ¡Pago aprobado! Cerrando modal en 1.5s...');
-            
-            setTimeout(() => {
-              setShowQRModal(false);
-              onConfirmPurchase({
-                paymentMethod: selectedPaymentMethod,
-                customerData,
-                compraId: paymentData.compraId,
-                paymentStatus: 'approved'
-              });
-            }, 1500);
-          }
-        }
-      )
-      .subscribe((status) => {
-        console.log('📡 Estado de suscripción:', status);
-        if (status === 'SUBSCRIBED') {
-          console.log('✅ Suscripción activa y escuchando cambios');
-        }
-      });
-
-    // Cleanup: desuscribirse cuando se cierre el modal
-    return () => {
-      console.log(`🔌 Desuscribiéndose del canal`);
-      supabase.removeChannel(channel);
-    };
-  }, [showQRModal, paymentData?.compraId]);
+  // Cleanup: detener polling cuando se cierre el modal
+  return () => {
+    console.log('🛑 Deteniendo polling');
+    clearInterval(interval);
+  };
+}, [showQRModal, paymentData?.compraId]);
 
   const validateForm = () => {
     const newErrors = {};
