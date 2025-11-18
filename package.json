@@ -23,5 +23,18 @@
     "@types/react": "19",
     "@types/react-dom": "19",
     "tailwindcss": "^4.1.13"
-  }
+  },
+  "description": "```sh pnpm create astro@latest -- --template minimal ```",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnthonyBalvin/uvk-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnthonyBalvin/uvk-web/issues"
+  },
+  "homepage": "https://github.com/AnthonyBalvin/uvk-web#readme"
 }

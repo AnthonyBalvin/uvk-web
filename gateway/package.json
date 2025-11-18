@@ -1,0 +1,16 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway for UVK Microservices",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "http-proxy-middleware": "^3.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5"
+  }
+}
