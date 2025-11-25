@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import FilterSidebar from './FilterSidebar.jsx';
+import { fetchFavoriteIds, toggleFavorite } from '../lib/favoritesService.js';
 
 // Componente para la cuadrícula de películas (sin cambios)
-const MovieGrid = ({ movies }) => (
+const MovieGrid = ({ movies, favoriteIds, onToggleFavorite }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
     {movies.length > 0 ? (
       movies.map((pelicula) => (
@@ -15,9 +16,20 @@ const MovieGrid = ({ movies }) => (
               <h2 className="text-xl font-bold mb-3 line-clamp-2 group-hover:text-red-500 transition-colors duration-300" style={{ color: '#2c2c2c' }}>{pelicula.titulo}</h2>
               <p className="text-sm font-medium" style={{ color: '#666666' }}>{pelicula.genero}, {pelicula.duracion}min, +{pelicula.clasificacion || '14'}.</p>
             </div>
-            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#e50914', boxShadow: '0 0 15px rgba(229, 9, 20, 0.6)' }}></div>
-            </div>
+            {(() => { const isFav = (favoriteIds || []).includes(pelicula.id); return (
+              <div className={`absolute top-4 right-4 transition-opacity duration-300 ${isFav ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                <button
+                  aria-label={isFav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                  title={isFav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                  className={`p-2 rounded-full bg-white/80 hover:bg-white shadow ${isFav ? 'ring-2 ring-red-500' : ''}`}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFavorite && onToggleFavorite(pelicula.id); }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isFav ? '#e50914' : 'none'} stroke="#e50914" strokeWidth="2" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C4.099 3.75 2 5.765 2 8.25c0 7.22 9.188 12 9.188 12S21 15.47 21 8.25z" />
+                  </svg>
+                </button>
+              </div>
+            ); })()}
           </div>
         </a>
       ))
@@ -34,6 +46,13 @@ const MovieBrowser = ({ moviesEnCartelera, proximosEstrenos, shows, ciudades, ci
   const [activeTab, setActiveTab] = useState('cartelera');
   const [filters, setFilters] = useState({ city: '', cinema: '', genre: '', day: '' });
   const [filteredMovies, setFilteredMovies] = useState(moviesEnCartelera || []);
+  const [favoriteIds, setFavoriteIds] = useState([]);
+  const [toast, setToast] = useState({ message: '', type: 'info', visible: false });
+
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => setToast(prev => ({ ...prev, visible: false })), 2000);
+  };
 
   // Lógica de filtros (sin cambios)
   useEffect(() => {
@@ -61,6 +80,37 @@ const MovieBrowser = ({ moviesEnCartelera, proximosEstrenos, shows, ciudades, ci
     }
     setFilteredMovies(Array.from(matchingMovies.values()));
   }, [filters, shows, moviesEnCartelera, activeTab]);
+
+  // Cargar favoritos del usuario
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const ids = await fetchFavoriteIds();
+      if (mounted) setFavoriteIds(ids || []);
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const handleToggleFavorite = async (peliculaId) => {
+    // Optimistic UI
+    setFavoriteIds(prev => prev.includes(peliculaId) ? prev.filter(id => id !== peliculaId) : [...prev, peliculaId]);
+    try {
+      const res = await toggleFavorite(peliculaId);
+      if (res && typeof res.favored === 'boolean') {
+        setFavoriteIds(prev => res.favored ? (prev.includes(peliculaId) ? prev : [...prev, peliculaId]) : prev.filter(id => id !== peliculaId));
+        showToast(res.favored ? 'Agregado a favoritos' : 'Quitado de favoritos', 'success');
+      }
+    } catch (e) {
+      // Revert on error
+      setFavoriteIds(prev => prev.includes(peliculaId) ? prev.filter(id => id !== peliculaId) : [...prev, peliculaId]);
+      const msg = (e && e.message) ? e.message : 'Error al guardar favorito.';
+      if (msg.toLowerCase().includes('no autenticado') || msg.toLowerCase().includes('auth')) {
+        showToast('Debes iniciar sesión para usar favoritos.', 'error');
+      } else {
+        showToast(msg, 'error');
+      }
+    }
+  };
 
   const moviesToShow = activeTab === 'cartelera' ? filteredMovies : proximosEstrenos;
 
@@ -98,11 +148,17 @@ const MovieBrowser = ({ moviesEnCartelera, proximosEstrenos, shows, ciudades, ci
         <aside className={`w-80 flex-shrink-0 transition-opacity duration-300 ${activeTab !== 'cartelera' ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
           <FilterSidebar ciudades={ciudades} cines={cines} onFilterChange={setFilters} />
         </aside>
-        
+
         <div className="flex-1 pl-8">
-          <MovieGrid movies={moviesToShow} />
+          <MovieGrid movies={moviesToShow} favoriteIds={favoriteIds} onToggleFavorite={handleToggleFavorite} />
         </div>
       </div>
+
+      {toast.visible && (
+        <div className={`fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-lg text-white transition-opacity ${toast.type === 'error' ? 'bg-red-600' : 'bg-green-600'}`}>
+          {toast.message}
+        </div>
+      )}
     </>
   );
 };

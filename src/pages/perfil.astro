@@ -1,32 +1,35 @@
 ---
 // src/pages/perfil.astro
-import Layout from '../layouts/Layout.astro';
-import PerfilDashboard from '../components/PerfilDashboard.jsx';
+import Layout from "../layouts/Layout.astro";
+import PerfilDashboard from "../components/PerfilDashboard.tsx";
 
 // Usamos el cliente autenticado que nos da el middleware
 const supabase = Astro.locals.supabase;
 
 // Verificamos si hay una sesión activa en el servidor
-const { data: { session } } = await supabase.auth.getSession();
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 const usuario = session?.user || null;
 
 // Si no hay sesión, redirigimos al login para proteger la página
 if (!usuario) {
-    return Astro.redirect('/login');
+  return Astro.redirect("/login");
 }
 
 // Obtenemos el perfil del usuario (nombre, apellido, etc.)
 const { data: profile } = await supabase
-    .from('perfiles')
-    .select('*')
-    .eq('id', usuario.id)
-    .single();
+  .from("perfiles")
+  .select("*")
+  .eq("id", usuario.id)
+  .single();
 
 // === ¡AQUÍ ESTÁ LA MAGIA! ===
 // Obtenemos todos los boletos del usuario con la información relacionada
 const { data: boletos } = await supabase
-  .from('boletos')
-  .select(`
+  .from("boletos")
+  .select(
+    `
     id,
     fila,
     asiento,
@@ -38,20 +41,20 @@ const { data: boletos } = await supabase
       cine:cines (nombre),
       sala_info:salas (nombre)
     )
-  `)
-  .eq('usuario_id', usuario.id)
-  .order('creado_en', { ascending: false });
-
+  `,
+  )
+  .eq("usuario_id", usuario.id)
+  .order("creado_en", { ascending: false });
 ---
 
 <Layout title="Mi Perfil - UVK CINES">
   <main class="pt-28 min-h-screen">
     {/* Pasamos los boletos y el perfil al componente de React */}
-    <PerfilDashboard 
-      client:load 
+    <PerfilDashboard
+      client:load
       serverProfile={profile}
       serverBoletos={boletos || []}
-      serverEmail={usuario.email} 
+      serverEmail={usuario.email}
     />
   </main>
 </Layout>
