@@ -69,15 +69,15 @@ export default function PaymentStep({
         },
         (payload) => {
           console.log('✅ ¡Cambio detectado!', payload);
-          
+
           const newStatus = payload.new.mp_payment_status;
           console.log('📊 Nuevo estado:', newStatus);
-          
+
           setPaymentStatus(newStatus);
 
           if (newStatus === 'approved') {
             console.log('💚 ¡Pago aprobado! Cerrando modal en 1.5s...');
-            
+
             setTimeout(() => {
               setShowQRModal(false);
               onConfirmPurchase({
@@ -106,23 +106,23 @@ export default function PaymentStep({
 
   const validateForm = () => {
     const newErrors = {};
-   
+
     if (!customerData.nombre.trim()) {
       newErrors.nombre = 'El nombre es requerido';
     }
-   
+
     if (!customerData.email.trim()) {
       newErrors.email = 'El email es requerido';
     } else if (!/\S+@\S+\.\S+/.test(customerData.email)) {
       newErrors.email = 'Email inválido';
     }
-   
+
     if (!customerData.telefono.trim()) {
       newErrors.telefono = 'El teléfono es requerido';
     } else if (!/^9\d{8}$/.test(customerData.telefono)) {
       newErrors.telefono = 'Teléfono inválido (debe ser 9 dígitos, ej: 987654321)';
     }
-   
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -221,15 +221,15 @@ export default function PaymentStep({
         }
 
         const mpData = await response.json();
-        
+
         console.log('🔗 Preferencia de MP creada:', mpData.preference_id);
-        
+
         setPaymentData({
           init_point: mpData.init_point,
           preference_id: mpData.preference_id,
           compraId: compra.id
         });
-        
+
         setPaymentStatus('pending');
         setShowQRModal(true);
       }
@@ -273,18 +273,16 @@ export default function PaymentStep({
                   <button
                     key={method.id}
                     onClick={() => setSelectedPaymentMethod(method.id)}
-                    className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
-                      selectedPaymentMethod === method.id
-                        ? 'border-red-600 bg-red-50 shadow-md'
-                        : 'border-gray-200 hover:border-red-300 bg-white'
-                    }`}
+                    className={`w-full p-4 rounded-xl border-2 transition-all text-left ${selectedPaymentMethod === method.id
+                      ? 'border-red-600 bg-red-50 shadow-md'
+                      : 'border-gray-200 hover:border-red-300 bg-white'
+                      }`}
                   >
                     <div className="flex items-center space-x-4">
-                      <div className={`${
-                        selectedPaymentMethod === method.id
-                          ? 'text-red-600'
-                          : 'text-gray-400'
-                      }`}>
+                      <div className={`${selectedPaymentMethod === method.id
+                        ? 'text-red-600'
+                        : 'text-gray-400'
+                        }`}>
                         {method.icon}
                       </div>
                       <div className="flex-1">
@@ -314,11 +312,10 @@ export default function PaymentStep({
                     type="text"
                     value={customerData.nombre}
                     onChange={(e) => setCustomerData({ ...customerData, nombre: e.target.value })}
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                      errors.nombre
-                        ? 'border-red-300 focus:border-red-500'
-                        : 'border-gray-200 focus:border-red-500'
-                    } focus:outline-none`}
+                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${errors.nombre
+                      ? 'border-red-300 focus:border-red-500'
+                      : 'border-gray-200 focus:border-red-500'
+                      } focus:outline-none`}
                     placeholder="Juan Pérez"
                   />
                   {errors.nombre && (
@@ -334,11 +331,10 @@ export default function PaymentStep({
                     type="email"
                     value={customerData.email}
                     onChange={(e) => setCustomerData({ ...customerData, email: e.target.value })}
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                      errors.email
-                        ? 'border-red-300 focus:border-red-500'
-                        : 'border-gray-200 focus:border-red-500'
-                    } focus:outline-none`}
+                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${errors.email
+                      ? 'border-red-300 focus:border-red-500'
+                      : 'border-gray-200 focus:border-red-500'
+                      } focus:outline-none`}
                     placeholder="juan@ejemplo.com"
                   />
                   {errors.email && (
@@ -354,11 +350,10 @@ export default function PaymentStep({
                     type="tel"
                     value={customerData.telefono}
                     onChange={(e) => setCustomerData({ ...customerData, telefono: e.target.value })}
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                      errors.telefono
-                        ? 'border-red-300 focus:border-red-500'
-                        : 'border-gray-200 focus:border-red-500'
-                    } focus:outline-none`}
+                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${errors.telefono
+                      ? 'border-red-300 focus:border-red-500'
+                      : 'border-gray-200 focus:border-red-500'
+                      } focus:outline-none`}
                     placeholder="987654321"
                   />
                   {errors.telefono && (
@@ -373,7 +368,7 @@ export default function PaymentStep({
           <div>
             <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 sticky top-24">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Resumen de Compra</h3>
-             
+
               {/* Boletos */}
               <div className="mb-4 pb-4 border-b border-gray-300">
                 <div className="flex justify-between items-start mb-2">
@@ -421,7 +416,7 @@ export default function PaymentStep({
               </div>
 
               {/* Método de Pago Seleccionado */}
-              <div className="bg-blue-50 rounded-lg p-3 mb-4">
+              <div className="bg-red-50 rounded-lg p-3 mb-4">
                 <p className="text-sm text-gray-600">Método de pago:</p>
                 <p className="font-bold text-gray-900">
                   {paymentMethods.find(m => m.id === selectedPaymentMethod)?.name}
@@ -462,19 +457,19 @@ export default function PaymentStep({
 
       {/* Modal de Mercado Pago con Realtime */}
       {showQRModal && paymentData && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-md flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div className="text-center">
-              
+
               {/* Estado: Pendiente */}
               {paymentStatus === 'pending' && (
                 <>
                   <div className="mb-4">
-                    <svg className="w-16 h-16 mx-auto text-blue-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16 mx-auto text-red-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  
+
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     Completa tu Pago
                   </h3>
@@ -490,7 +485,7 @@ export default function PaymentStep({
                       href={paymentData.init_point}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors"
+                      className="inline-flex items-center space-x-2 bg-red-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-600 transition-colors"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -531,7 +526,7 @@ export default function PaymentStep({
                       </svg>
                     </div>
                   </div>
-                  
+
                   <h3 className="text-2xl font-bold text-green-600 mb-2">
                     ¡Pago Confirmado!
                   </h3>
@@ -554,14 +549,14 @@ export default function PaymentStep({
                       </svg>
                     </div>
                   </div>
-                  
+
                   <h3 className="text-2xl font-bold text-red-600 mb-2">
                     Pago Rechazado
                   </h3>
                   <p className="text-gray-600 mb-6">
                     El pago no pudo ser procesado
                   </p>
-                  
+
                   <button
                     onClick={() => {
                       setShowQRModal(false);

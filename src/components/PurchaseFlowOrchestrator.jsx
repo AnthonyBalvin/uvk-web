@@ -8,14 +8,14 @@ import PurchaseBreadcrumbReact from './PurchaseBreadcrumbReact';
 export default function PurchaseFlowOrchestrator({ funcion, salaInfo, boletosOcupados, usuario }) {
   const [step, setStep] = useState('asientos');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [carritoAlimentos, setCarritoAlimentos] = useState({});
   const [alimentos, setAlimentos] = useState([]);
-  
+
   const [ticketsPrice, setTicketsPrice] = useState(0);
   const [foodPrice, setFoodPrice] = useState(0);
-  
+
   const PRECIO_POR_BOLETO = 15.00;
 
   const handleSeatsSelected = (seats) => {
@@ -31,7 +31,7 @@ export default function PurchaseFlowOrchestrator({ funcion, salaInfo, boletosOcu
   const handleContinueToPayment = (carrito, alimentosData) => {
     setCarritoAlimentos(carrito);
     setAlimentos(alimentosData);
-    
+
     // Calcular precio de alimentos
     let totalFood = 0;
     for (const [alimentoId, cantidad] of Object.entries(carrito)) {
@@ -57,8 +57,8 @@ export default function PurchaseFlowOrchestrator({ funcion, salaInfo, boletosOcu
       // 1. Crear la compra
       const { data: compra, error: compraError } = await supabase
         .from('compras')
-        .insert({ 
-          usuario_id: usuario.id, 
+        .insert({
+          usuario_id: usuario.id,
           monto_total: finalTotalPrice,
           metodo_pago: paymentData.paymentMethod,
           email_contacto: paymentData.customerData.email,
