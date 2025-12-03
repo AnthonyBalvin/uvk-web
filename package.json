@@ -15,10 +15,12 @@
     "@supabase/supabase-js": "^2.57.2",
     "astro": "^5.13.5",
     "jspdf": "^3.0.4",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.554.0",
     "qrcode": "^1.5.4",
     "react": "19",
-    "react-dom": "19"
+    "react-dom": "19",
+    "recharts": "^3.5.1"
   },
   "devDependencies": {
     "@astrojs/node": "^9.4.4",

@@ -1,9 +1,15 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import SalesList from "../../components/admin/SalesList";
 ---
+
 <AdminLayout>
-  <header class="main-header">
-    <h1>Ventas y Reportes</h1>
-    <p>Consulta el historial de ventas y genera reportes.</p>
+  <header class="main-header mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Ventas</h1>
+    <p class="text-gray-500 mt-2">
+      Consulta el historial de todas las ventas realizadas.
+    </p>
   </header>
+
+  <SalesList client:load />
 </AdminLayout>

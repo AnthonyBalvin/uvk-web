@@ -1,0 +1,41 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import ReportsDashboard from "../../components/admin/ReportsDashboard";
+---
+
+<AdminLayout>
+    <header class="main-header mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">
+                    Reportes y Estadísticas
+                </h1>
+                <p class="text-gray-500 mt-2">
+                    Visualiza el rendimiento de tu cine en tiempo real.
+                </p>
+            </div>
+            <div class="flex space-x-3">
+                <button
+                    class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center"
+                >
+                    <svg
+                        class="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        ></path>
+                    </svg>
+                    Exportar Datos
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <ReportsDashboard client:load />
+</AdminLayout>

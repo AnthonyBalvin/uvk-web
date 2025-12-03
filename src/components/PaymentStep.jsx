@@ -128,12 +128,12 @@ export default function PaymentStep({
   };
 
   const handleConfirm = async () => {
+    // 1. Validaciones iniciales
     if (!validateForm()) return;
-
     setProcessingPayment(true);
 
     try {
-      // 1. Crear compra en la base de datos
+      // 2. Crear compra en la base de datos
       const { data: compra, error: compraError } = await supabase
         .from('compras')
         .insert({
@@ -149,10 +149,9 @@ export default function PaymentStep({
         .single();
 
       if (compraError) throw compraError;
-
       console.log('✅ Compra creada con ID:', compra.id);
 
-      // 2. Crear boletos
+      // 3. Crear boletos
       const boletosData = selectedSeats.map(seat => ({
         compra_id: compra.id,
         funcion_id: funcionId,
@@ -170,7 +169,7 @@ export default function PaymentStep({
 
       if (boletosError) throw boletosError;
 
-      // 3. Crear detalle de alimentos si hay
+      // 4. Crear detalle de alimentos si hay
       if (Object.keys(carritoAlimentos).length > 0) {
         const alimentosData = Object.entries(carritoAlimentos)
           .filter(([_, cantidad]) => cantidad > 0)
@@ -188,18 +187,20 @@ export default function PaymentStep({
         if (alimentosError) throw alimentosError;
       }
 
-      // 4. Si es efectivo, terminar aquí
+      // 5. Lógica según método de pago
+
+      // A. Si es efectivo, terminar aquí
       if (selectedPaymentMethod === 'efectivo') {
         onConfirmPurchase({
           paymentMethod: selectedPaymentMethod,
           customerData,
           compraId: compra.id
         });
-        setProcessingPayment(false);
+        // Nota: No ponemos setProcessingPayment(false) aquí porque el componente padre quizás desmonte este componente
         return;
       }
 
-      // 5. Si es Mercado Pago, crear preferencia
+      // B. Si es Mercado Pago, crear preferencia
       if (selectedPaymentMethod === 'mercadopago') {
         const response = await fetch('/api/crear-pago-mp', {
           method: 'POST',
@@ -221,7 +222,6 @@ export default function PaymentStep({
         }
 
         const mpData = await response.json();
-
         console.log('🔗 Preferencia de MP creada:', mpData.preference_id);
 
         setPaymentData({
@@ -238,7 +238,11 @@ export default function PaymentStep({
       console.error('❌ Error al procesar compra:', error);
       alert('Error al procesar la compra: ' + error.message);
     } finally {
-      setProcessingPayment(false);
+      // Solo desactivamos el loading si NO es efectivo (ya que efectivo navega fuera)
+      // O si hubo un error.
+      if (selectedPaymentMethod !== 'efectivo') {
+        setProcessingPayment(false);
+      }
     }
   };
 
